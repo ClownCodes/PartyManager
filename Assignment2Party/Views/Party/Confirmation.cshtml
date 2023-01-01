@@ -1,0 +1,19 @@
+﻿@model Invitation
+@{
+    ViewData["Title"] = "Thank you";
+}
+
+<div>
+    <p>
+        Thank you for submitting your response!
+        @if (Model.Status == Status.RespondedYes)
+        {
+            <div>We are thrilled that you will be joining us!</div>
+        }
+        else if (Model.Status == Status.RespondedNo)
+        {
+            <div>We are sorry that you are not coming, but you can change your mind.</div>
+        }
+    </p>
+</div>
+

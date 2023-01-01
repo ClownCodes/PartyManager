@@ -1,0 +1,88 @@
+﻿@model ManagePartyViewModel
+
+@{
+    ViewData["Title"] = "Manage your parties";
+    int notSent = Model.Invitations.Count(i => i.Status == Status.InviteNotSent);
+    int sent = Model.Invitations.Count(i => i.Status == Status.InviteSent);
+    int yes = Model.Invitations.Count(i => i.Status == Status.RespondedYes);
+    int no = Model.Invitations.Count(i => i.Status == Status.RespondedNo);
+}
+
+<a asp-controller="Party" asp-action="GetAllParties">All parties</a>
+<span class="mix">|</span>
+<a asp-controller="Party" asp-action="EditPartyRequest" asp-route-id="@Model.ActiveParty.PartyId">Edit this party</a>
+<span class="mix">|</span>
+<a asp-controller="Party" asp-action="AddPartyRequest">Add a new party</a>
+<div class="mt-4">
+    <h5>Party summary</h5>
+    <p>The party "@Model.ActiveParty.Description" is at @Model.ActiveParty.Location on @Model.ActiveParty.EventDate.</p>
+    <span>Invites not sent: @notSent</span>
+    <span>Sent: @sent</span>
+    <span>Yes: @yes</span>
+    <span>No: @no</span>
+</div>
+
+<h5 class="mt-4">Invitations:</h5>
+@if (Model.Invitations.Count()!=0)
+{ 
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Guest Name</th>
+                <th>Guest Email</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var invitation in Model.Invitations)
+            {
+                <tr>
+                    <td>@invitation.GuestName</td>
+                    <td>@invitation.GuestEmail</td>
+                    @switch (invitation.Status)
+                    {
+                        case Status.InviteSent:
+                            <td>Invitation sent</td>
+                            break;                        
+                        case Status.InviteNotSent:
+                            <td>Invitation not sent</td>
+                            break;
+                        case Status.RespondedYes:
+                            <td>Responded yes</td>
+                            break;
+                        case Status.RespondedNo:
+                            <td>Responded no</td>
+                            break;
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No invitations yet — you should create some! </p>
+}
+
+<form asp-controller="Party" asp-action="CreateInvitation" asp-route-id="@Model.ActiveParty.PartyId" method="post" enctype="application/x-www-form-urlencoded" class="row">
+    <div class="text-danger" asp-validation-summary="All"></div>
+    <div class="form-group col-sm">
+        <label asp-for="Invitation.GuestName">Guest Name</label>
+        <input type="text" asp-for="Invitation.GuestName" class="form-control" />
+    </div>
+
+    <div class="form-group col-sm">
+        <label asp-for="Invitation.GuestEmail">Guest Email</label>
+        <input type="text" asp-for="Invitation.GuestEmail" class="form-control" />
+    </div>
+
+    <div class="form-group col-sm mt-4">
+        <button type="submit" class="btn btn-primary">Create Invitation</button>
+    </div>
+</form>
+
+<h5 class="mt-4">Send all invitations:</h5>
+
+<form asp-controller="Party" asp-action="SendInvitations" asp-route-id="@Model.ActiveParty.PartyId" method="post" enctype="application/x-www-form-urlencoded">
+    <button type="submit" class="btn btn-primary">Send Invitations</button>
+</form>

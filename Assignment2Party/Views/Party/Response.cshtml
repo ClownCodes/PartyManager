@@ -1,0 +1,21 @@
+﻿@model ManagePartyViewModel
+@{
+    ViewData["Title"] = "Invitation Response";
+}
+
+<div>
+    <p>Hey @Model.Invitation.GuestName, you have been invited to the party "@Model.ActiveParty.Description" at @Model.ActiveParty.Location on @Model.ActiveParty.EventDate.</p>
+</div>
+
+<form asp-controller="Party" asp-action="HandleSubmitResponse" asp-route-id="@Model.ActiveParty.PartyId" method="post" enctype="application/x-www-form-urlencoded" class="row">
+    <div>
+        <label asp-for="Invitation.Status">Will you attend?</label>
+        <input type="radio" asp-for="Invitation.Status" value="@Status.RespondedYes"  checked="checked"/>Yes
+        <input type="radio" asp-for="Invitation.Status" value="@Status.RespondedNo" />No
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+    <input type="hidden" asp-for="Invitation.InvitationId" />
+    <input type="hidden" asp-for="Invitation.GuestName" />
+    <input type="hidden" asp-for="Invitation.GuestEmail" />
+    <input type="hidden" asp-for="Invitation.PartyId" />
+</form>
